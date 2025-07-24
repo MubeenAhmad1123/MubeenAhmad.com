@@ -1340,17 +1340,16 @@ text-decoration: none;
 /* Chatbot Container */
 #chatbot-container {
   position: fixed;
-  bottom: 100px;
-  right: 30px;
-  width: 45%;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  transition: all 0.3s ease-in-out;
   overflow: hidden;
-  z-index: 999;
-  animation: slideIn 0.4s ease forwards;
+  z-index: 9999;
 }
 @media (max-width: 768px) {
   #chatbot-container {

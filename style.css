@@ -1364,7 +1364,7 @@ text-decoration: none;
     border-radius: 0;
   }
 }
-/* Slide In Animation */
+
 @keyframes slideIn {
   from {
     opacity: 0;

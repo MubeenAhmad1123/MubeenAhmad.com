@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="Mubeen Ahmad is a passionate Front-End Developer and Content Strategist based in Pakistan. I design conversion-focused websites, craft engaging content, and build digital experiences that turn clicks into clients. Let's build your online success!">
+<title>Mubeen Ahmad | Front-End Developer & Content Strategist - Pakistan</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+<script src="fuzzyReplies.js"></script>
+<link rel="shortcut icon" href="img/fav.png" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="theme-neon-cyber">
+    <!-- Navigation -->
+   <nav>
+    <div class="container">
+        <div class="nav-container">
+            <div class="logo"><a href="index.html">Mubeen Ahmad</a></div>
+
+            <!-- Hamburger icon -->
+  <button class="hamburger" onclick="toggleMobileMenu()">
+  <i class="fas fa-bars" id="menu-icon"></i>
+</button>
+
+
+            <!-- Navigation links -->
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <button><a class="resume-link" href="Mubeen Resume.pdf">Download Resume</a></button>
+            </ul>
+
+            <!-- Theme toggle -->
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+<div class="profile-image">
+    <img id="profile-img" src="img/profile1.webp" alt="Profile Picture" loading="lazy">
+    
+</div>
+
+      <div class="typewriter-container">
+          <h1>Hi, I'm Mubeen Ahmad</h1>
+          <p>I’m a <span id="typed-skill"></span></p>
+          <h2>I Build Websites That Turn Clicks Into Clients</h2>
+        </div>
+
+
+                <div class="cta-buttons">
+                    <a href="#contact" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i>
+                        Hire Me
+                    </a>
+                    <a href="#services" class="btn btn-secondary">
+                        <i class="fas fa-briefcase"></i>
+                        View Services
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    </section>
+    <div class="call ">
+     <a href="https://calendly.com/mubeenahma1123/30min" class="btn btn-secondary call">
+                        <img src="img/call.gif" alt="phone ringing" style="width: 23px;">
+                        Book a call with Mubeen
+                    </a>
+</div>
+    <section class="code-snipist">
+        <div class="code-card">
+  <div class="card-header">
+    <span class="dot red"></span>
+    <span class="dot yellow"></span>
+    <span class="dot green"></span>
+    <span class="filename">about-me.js</span>
+  </div>
+  <pre class="code-block"><code><span class="line"><span class="keyword">const</span> me = {</span>
+<span class="line">  <span class="key">name</span>: <span class="string">"Mubeen Ahmad"</span>,</span>
+<span class="line">  <span class="key">mission</span>: <span class="string">"Build epic sites that inspire"</span>,</span>
+<span class="line">  <span class="key">inspire</span>: <span class="function">() =></span> <span class="string">"Code today, change tomorrow! 🚀"</span></span>
+<span class="line">};</span>
+<span class="line">console.<span class="method">log</span>(me.<span class="property">inspire</span>());</span></code></pre>
+<div class="card-header bottom-header"><div class="bottom"><i class="fa-brands fa-js"></i>  JavaScript</div>
+<div class="bottom"><i class="fas fa-bolt"></i> Powered by React</div></div>
+</div>
+
+    </section>
+     <section class="dark-section">
+        <h1 class="section-title">😓 Struggling to Turn Clicks Into Clients?</h1>
+    <div class="box-1">
+    <div class="header-text"> Be honest<img src="img/sweat.gif" alt="fever and hard working person" class="sweat-img" > is this you?</div>
+    </div>
+      
+
+    <div class="problems">
+      <div class="card">
+        <div class="emoji">🥺</div>
+        <h3>Visitors Come & Go Without Action</h3>
+        <p>It’s frustrating — your website gets traffic, but no one reaches out, engages, or shows real interest."
+</p>
+
+
+      </div>
+      <div class="card">
+        <div class="emoji">🥺</div>
+        <h3>Your site looks like just another template</h3>
+        <p>You need a design that stands out and speaks your brand’s language.</p>
+      </div>
+      <div class="card">
+        <div class="emoji">🥺</div>
+        <h3>Your competitors are stealing the spotlight</h3>
+        <p>while you’re still trying to get noticed.But here’s the truth — a powerful brand presence can flip the script.</p>
+      </div>
+    </div>
+  </section>
+<section>
+<div class="outer-box">
+  <div class="box">HERE'S MY SOLUTION</div>
+
+</div>
+  <div class="section-subtitle">
+    <h1>You don’t need fancy animations or Flashy features
+ <br>
+<strong>You need a design that works — one that turns visitors into leads.</strong></h1>
+  </div>
+
+  <div id="outer-box">
+  <div id="box">HERE’S MY Approach</div>
+
+</div>
+
+<div class="steps">
+  <!-- Top Row -->
+  <div class="step-row top-row">
+      <div class="step" data-step="01">
+      <h4 data-step="01">Understand Your Business and Your Struggles</h4>
+      <p>I get to know your business goals and challenges.</p>
+    </div>
+  
+
+    <div class="center-image">
+      <img src="img/mubeen.webp" alt="Mubi's photo" />
+    </div>
+
+   <div class="step" data-step="02">
+      <h4 data-step="02">Build a Brand That Stands Out</h4>
+      <p>I create your logo and branding guidelines to show your uniqueness.</p>
+    </div>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="step-row bottom-row">
+       <div class="step" data-step="03">
+      <h4 data-step="03">Write Words That Convert leads into sales </h4>
+      <p>I write engaging, clear, and fun copy to make people convert.</p>
+    </div>
+  
+
+    <div class="step" data-step="04">
+      <h4 data-step="04">Design & Develop for Results</h4>
+      <p>I design and build your website to be fast and conversion-focused.</p>
+    </div>
+  </div>
+<div class="call">
+     <a href="https://calendly.com/mubeenahma1123/30min" class="btn btn-secondary call">
+                        <img src="img/call.gif" alt="calling hand" style="width: 23px;">
+                       Let’s Talk Goals
+                    </a>
+</div>
+
+</section>
+<section class="skills-section">
+  <h2>YOU NAME IT,<br>AND I'LL DO IT FOR YOU.</h2>
+
+  <!-- TOP ROW -->
+<div class="ticker-wrap top">
+  <div class="ticker">
+    <div class="ticker-content">
+      <span><i class="fa-solid fa-code"></i> Front-End Development</span>
+      <span><i class="fa-brands fa-html5"></i> HTML5</span>
+      <span><i class="fa-brands fa-css3-alt"></i> CSS3</span>
+      <span><i class="fa-brands fa-js"></i> JavaScript</span>
+      <span><i class="fa-brands fa-react"></i> React (Learning)</span>
+      <span><i class="fa-solid fa-magnifying-glass"></i> SEO</span>
+      <span><i class="fa-brands fa-wordpress"></i> WordPress</span>
+      <span><i class="fa-solid fa-paintbrush"></i> Design & Media</span>
+      <span><i class="fa-brands fa-figma"></i> Figma</span>
+      <span><i class="fa-solid fa-pen-nib"></i> Canva</span>
+      <span><i class="fa-solid fa-pen-ruler"></i> Logo Design</span>
+      <span><i class="fa-solid fa-scissors"></i> CapCut Video Editing</span>
+
+      <!-- Duplicate for infinite scroll -->
+      <span><i class="fa-solid fa-code"></i> Front-End Development</span>
+      <span><i class="fa-brands fa-html5"></i> HTML5</span>
+      <span><i class="fa-brands fa-css3-alt"></i> CSS3</span>
+      <span><i class="fa-brands fa-js"></i> JavaScript</span>
+      <span><i class="fa-brands fa-react"></i> React (Learning)</span>
+      <span><i class="fa-solid fa-magnifying-glass"></i> SEO</span>
+      <span><i class="fa-brands fa-wordpress"></i> WordPress</span>
+      <span><i class="fa-solid fa-paintbrush"></i> Design & Media</span>
+      <span><i class="fa-brands fa-figma"></i> Figma</span>
+      <span><i class="fa-solid fa-pen-nib"></i> Canva</span>
+      <span><i class="fa-solid fa-pen-ruler"></i> Logo Design</span>
+      <span><i class="fa-solid fa-scissors"></i> CapCut Video Editing</span>
+    </div>
+  </div>
+</div>
+<!-- BOTTOM ROW -->
+<div class="ticker-wrap bottom">
+  <div class="ticker">
+    <div class="ticker-content">
+      <span><i class="fa-solid fa-object-group"></i> UI/UX Design</span>
+      <span><i class="fa-brands fa-linkedin"></i> LinkedIn Strategy</span>
+      <span><i class="fa-solid fa-pen"></i> Copywriting</span>
+      <span><i class="fa-solid fa-language"></i> Urdu ↔ English Translation</span>
+      <span><i class="fa-solid fa-feather"></i> Content Creation</span>
+      <span><i class="fa-solid fa-hashtag"></i> Social Media</span>
+      <span><i class="fa-solid fa-brain"></i> AI & Emerging Tech</span>
+      <span><i class="fa-solid fa-robot"></i> Prompt Engineering</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles"></i> AI Content Creation</span>
+      <span><i class="fa-brands fa-rocketchat"></i> ChatGPT</span>
+      <span><i class="fa-solid fa-microchip"></i> AI-Assisted Development</span>
+
+      <!-- Duplicate -->
+      <span><i class="fa-solid fa-object-group"></i> UI/UX Design</span>
+      <span><i class="fa-brands fa-linkedin"></i> LinkedIn Strategy</span>
+      <span><i class="fa-solid fa-pen"></i> Copywriting</span>
+      <span><i class="fa-solid fa-language"></i> Urdu ↔ English Translation</span>
+      <span><i class="fa-solid fa-feather"></i> Content Creation</span>
+      <span><i class="fa-solid fa-hashtag"></i> Social Media</span>
+      <span><i class="fa-solid fa-brain"></i> AI & Emerging Tech</span>
+      <span><i class="fa-solid fa-robot"></i> Prompt Engineering</span>
+      <span><i class="fa-solid fa-wand-magic-sparkles"></i> AI Content Creation</span>
+      <span><i class="fa-brands fa-rocketchat"></i> ChatGPT</span>
+      <span><i class="fa-solid fa-microchip"></i> AI-Assisted Development</span>
+    </div>
+  </div>
+</div>
+
+</section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <div class="container">
+            
+            <h2 class="section-title">Skills & Expertise</h2>
+            <p class="section-subtitle">A comprehensive skill set covering front-end development, design, content strategy, and emerging AI technologies.</p>
+            
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3><i class="fas fa-code"></i> Front-End Development</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">HTML5</span>
+                        <span class="skill-tag">CSS3</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">React (Learning)</span>
+                        <span class="skill-tag">SEO</span>
+                        <span class="skill-tag">WordPress</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-paint-brush"></i> Design & Media</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Figma</span>
+                        <span class="skill-tag">Canva</span>
+                        <span class="skill-tag">Logo Design</span>
+                        <span class="skill-tag">CapCut Video Editing</span>
+                        <span class="skill-tag">UI/UX Design</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-bullhorn"></i> Content & Strategy</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">LinkedIn Strategy</span>
+                        <span class="skill-tag">Copywriting</span>
+                        <span class="skill-tag">Urdu ↔ English Translation</span>
+                        <span class="skill-tag">Content Creation</span>
+                        <span class="skill-tag">Social Media</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-robot"></i> AI & Emerging Tech</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Prompt Engineering</span>
+                        <span class="skill-tag">AI Content Creation</span>
+                        <span class="skill-tag">ChatGPT</span>
+                        <span class="skill-tag">AI-Assisted Development</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Projects Section -->
+
+
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <p class="section-subtitle">A showcase of my latest web development projects demonstrating various skills and technologies.</p>
+            
+        <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="img/Web lift.webp" alt="startup web image">
+                    </div>
+                    <div class="project-content">
+                        <div class="project-tech">
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                        <h3>WEB-Lift-AI</h3>
+                        <p><strong>Challenge:</strong> Create a modern AI-focused landing page with smooth animations.</p>
+                        <p><strong>Approach:</strong> Implemented advanced CSS animations and responsive design principles.</p>
+                        <p><strong>Outcome:</strong> A visually striking landing page with enhanced user engagement.</p>
+                        <div class="project-links">
+                            <a href="https://mubeenahmad1123.github.io/Landing-Page-WEB-Lift-AI-/" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Live Demo
+                            </a>
+                            <a href="
+https://github.com/MubeenAhmad1123/Landing-Page-WEB-Lift-AI-
+" class="project-link">
+                                <i class="fab fa-github"></i>
+                                GitHub Repo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                          <img src="img/Task flow.webp" alt=" Task flowweb image">
+                    </div>
+                    <div class="project-content">
+                        <div class="project-tech">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                        <h3>To-Do App <strong>TaskFlow</strong></h3>
+                        <p><strong>Challenge:</strong> Create a productivity-focused to-do app with rich features.</p>
+                        <p><strong>Approach:</strong> Implemented localStorage, editing, filtering, and theming options.</p>
+                        <p><strong>Outcome:</strong>Clean, responsive task manager that boosts productivity.</p>
+                        <div class="project-links">
+                            <a href="https://mubeenahmad1123.github.io/codealpha_TaskFlow-/" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Live Demo
+                            </a>
+                            <a href="https://github.com/MubeenAhmad1123/codealpha_TaskFlow-" class="project-link">
+                                <i class="fab fa-github"></i>
+                                GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                         <img src="img/bazzarly.webp" alt=" e-commerce image">
+                    </div>
+                    <div class="project-content">
+                        <div class="project-tech">
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                        <h3>Shopping Bazaarly</h3>
+                        <p><strong>Challenge:</strong> Build an interactive e-commerce interface with cart functionality.</p>
+                        <p><strong>Approach:</strong> Developed dynamic cart system with responsive design.</p>
+                        <p><strong>Outcome:</strong> Fully functional shopping cart with smooth user experience.</p>
+                        <div class="project-links">
+                            <a href="https://mubeenahmad1123.github.io/Add-to-Cart-Shopping-Bazaarly-/
+" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Live Demo
+                            </a>
+                            <a href="https://github.com/MubeenAhmad1123/Add-to-Cart-Shopping-Bazaarly-" class="project-link">
+                                <i class="fab fa-github"></i>
+                                GitHub Repo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                          <img src="img/weather app.webp" alt="weather app image">
+                    </div>
+                    <div class="project-content">
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">API</span>
+                        </div>
+                        <h3>Weather App</h3>
+                        <p><strong>Challenge:</strong> Create a real-time weather application with location-based data.</p>
+                        <p><strong>Approach:</strong> Integrated weather API with geolocation and error handling.</p>
+                        <p><strong>Outcome:</strong> Accurate weather app with intuitive user interface.</p>
+                        <div class="project-links">
+                            <a href="https://mubeenahmad1123.github.io/Weather-App/" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Live Demo
+                            </a>
+                            <a href="https://github.com/MubeenAhmad1123/Weather-App" class="project-link">
+                                <i class="fab fa-github"></i>
+                                GitHub Repo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                          <img src="img/tic tac toe.jpg"game  image">
+                       
+                    </div>
+                    <div class="project-content">
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Game Logic</span>
+                        </div>
+                        <h3>Tic-Tac-Toe Game</h3>
+                        <p><strong>Challenge:</strong> Develop an interactive game with AI opponent logic.</p>
+                        <p><strong>Approach:</strong> Implemented game algorithms and winning condition detection.</p>
+                        <p><strong>Outcome:</strong> Engaging game with smooth gameplay and score tracking  some sound effects as well.</p>
+                        <div class="project-links">
+                            <a href="https://mubeenahmad1123.github.io/Tic-Tac-Toe/" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Live Demo
+                            </a>
+                            <a href="https://github.com/MubeenAhmad1123/Tic-Tac-Toe
+" class="project-link">
+                                <i class="fab fa-github"></i>
+                                GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                      <img src="img/portfolio.webp"poertfolio web image">
+                    </div>
+                    <div class="project-content">
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">CSS3</span>
+                        </div>
+                        <h3>Personal Portfolio</h3>
+                        <p><strong>Challenge:</strong> Build a standout developer portfolio with a modern, premium design.</p>
+                        <p><strong>Approach:</strong> Used custom themes, advanced animations, and responsive layout. and Some creativity</p>
+                        <p><strong>Outcome:</strong>  Engaging, professional site that reflects my personality and skills..</p>
+                        <div class="project-links">
+                            <a href="#" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Live Demo
+                            </a>
+                            <a href="#" class="project-link">
+                                <i class="fab fa-github"></i>
+                                GitHub Repo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+           
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<div class="call">
+     <a href="https://calendly.com/mubeenahma1123/30min" class="btn btn-secondary call" class="call" >
+                        <img src="img/call.gif" alt="calling hand" style="width: 23px;">
+                        Book a call with Mubeen
+                    </a>
+</div>
+    <!-- Education Section -->
+    <section id="education" class="education">
+        <div class="container">
+            <h2 class="section-title">Education & Certifications</h2>
+            <p class="section-subtitle">Continuous learning journey in web development, AI, and content strategy.</p>
+            
+            <div class="education-grid">
+                <div class="education-card">
+                    <h3><i class="fas fa-graduation-cap"></i> Self-Taught Frontend Developer</h3>
+                    <p class="text-secondary">2022 - Present</p>
+                    <p>Comprehensive self-directed learning in modern web development technologies, focusing on responsive design, JavaScript fundamentals, and user experience principles.</p>
+                </div>
+                
+     <div class="education-card">
+                    <h3><i class="fa-solid fa-laptop-code"></i> Responsive web Design</h3>
+                    <p class="text-secondary">2025 - Present</p>
+                    <p>Complete Responsive web design course from <strong>Free Code Camp</strong> learn about Display flex and Grid and Learn about @media qurries in Depth</p>
+                   <button class="edu-btn">
+  <a href="https://www.freecodecamp.org/certification/MubeenAhmad/responsive-web-design" target="_blank" rel="noopener noreferrer">
+    View Certificate
+  </a>
+</button>
+
+                </div>
+
+                <div class="education-card">
+                    <h3><i class="fas fa-robot"></i> AI Prompt Engineering Course</h3>
+                    <p class="text-secondary">2025 - Ongoing</p>
+                    <p>Advanced training in AI prompt engineering techniques, focusing on content generation, workflow optimization, and AI-assisted development practices.</p>
+                </div>
+                
+                <div class="education-card">
+                    <h3><i class="fab fa-react"></i> React Fundamentals</h3>
+                    <p class="text-secondary">2024 - Ongoing</p>
+                    <p>Currently learning React.js framework, including components, state management, hooks, and modern development workflows for scalable web applications.</p>
+                </div>
+                
+                     <div class="education-card">
+                    <h3><i class="fas fa-graduation-cap"></i> Intermidiate in Computer Science</h3>
+                    <p class="text-secondary">2023 - 2025</p>
+                    <p>Complete Intermidiate from <strong>Govt Degree college Vehari</strong> learn about learn about C anguage physics and Mathamtics  concepts </p>
+                   <button class="edu-btn">
+  <a href="https://www.freecodecamp.org/certification/MubeenAhmad/responsive-web-design" target="_blank" rel="noopener noreferrer">
+    View Certificate
+  </a>
+</button>
+
+                </div>
+           
+            </div>
+        </div>
+    </section>
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Let's Work Together</h2>
+            <p class="section-subtitle">Ready to start your project? Get in touch and let's discuss how I can help bring your vision to life.</p>
+            
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <p>I'm always excited to work on new projects and help businesses grow their online presence. Let's discuss your needs!</p>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <p>mubeenahma1123@gmail.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-linkedin"></i>
+                        <div>
+                            <strong>LinkedIn</strong>
+                            <p>in/mubeen-ahmad-frontend</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-github"></i>
+                        <div>
+                            <strong>GitHub</strong>
+                            <p>mubeenahma1123</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Location</strong>
+                            <p>Vehari, Punjab, Pakistan</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send Message</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="service">Service Needed</label>
+                            <select id="service" name="service" style="width: 100%; padding: 1rem; border: 2px solid var(--border-color); border-radius: 10px; background: var(--bg-primary); color: var(--text-primary);">
+                                <option>Landing Page Development</option>
+                                <option>Landing + LinkedIn Bundle</option>
+                                <option>Logo Design</option>
+                                <option>Video Editing</option>
+                                <option>Translation Services</option>
+                                <option>AI-Powered Content</option>
+                                <option>Custom Project</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="budget">Budget Range</label>
+                            <select id="budget" name="budget" style="width: 100%; padding: 1rem; border: 2px solid var(--border-color); border-radius: 10px; background: var(--bg-primary); color: var(--text-primary);">
+                                <option>₨ 2,000 - 5,000</option>
+                                <option>₨ 5,000 - 10,000</option>
+                                <option>₨ 10,000 - 15,000</option>
+                                <option>₨ 15,000+</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Project Details</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Tell me about your project requirements..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+<div class="call">
+     <a href="https://calendly.com/mubeenahma1123/30min" class="btn btn-secondary call" class="call" >
+                        <img src="img/call.gif" alt="calling hand" style="width: 23px;">
+                        Book a call with Mubeen
+                    </a>
+</div>
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="social-links">
+      <a href="mailto:mubeenahma1123@gmail.com" class="social-link email">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <a href="https://linkedin.com/in/mubeen-ahmad-frontend" class="social-link linkedin" target="_blank">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a href="https://github.com/mubeenahma1123" class="social-link github" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="https://wa.me/+923218492868" class="social-link whatsapp" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+    </div>
+    <p>&copy; 2024 Mubeen Ahmad. All rights reserved.</p>
+    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-primary);">
+      Frontend Developer & Content Strategist | Vehari, Punjab, Pakistan
+    </p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+      A Personal portfolio Made by Mubeen With ❤️ and  ☕
+    </p>
+  </div>
+</footer>
+<button id="backToTop" title="Go to top">⬆️
+</button>
+<!-- Chat Toggle Button (floating button) -->
+ 
+<!-- Floating Chat Toggle -->
+<!-- Floating Chat Toggle -->
+<div id="chat-toggle" onclick="toggleChat()">
+  <div class="chat-badge">
+    <span class="wave">👋🏼</span> 
+    <span class="chat-text">Let's Chat</span>
+  </div>
+  <div class="bot-icon toggle-icon">
+    <span class="icon bot">    <img src="img/bot-avatar.webp" alt="bot-img" style="width: 100%; height: 100%; border-radius: 50%;"></span>
+    <span class="icon close">✖</span>
+  </div>
+</div>
+
+
+
+
+<!-- Chatbot Container -->
+<div id="chatbot-container" class="hidden">
+  <div class="chat-header">
+    Chat with Us
+    <span onclick="toggleChat()" style="cursor:pointer;">✖</span>
+  </div>
+
+  <div id="chat-body" class="chat-body"></div>
+
+  <div class="chat-input">
+    <!-- Quick Replies go here -->
+ <!-- Quick Replies go here -->
+<div id="quick-replies" class="quick-replies"></div>
+
+    <!-- User Input -->
+    <input type="text" id="user-input" onkeydown="checkEnter(event)" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>

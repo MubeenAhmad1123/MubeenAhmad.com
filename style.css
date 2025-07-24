@@ -1252,7 +1252,7 @@ text-decoration: none;
 }
 
 .bot-icon img {
-  width: 60%;
+  width: 90%;
   height: 60%;
   object-fit: contain;
 }
@@ -1270,24 +1270,14 @@ text-decoration: none;
   transition: background 0.3s ease;
 }
 
-/* Icons inside button */
-.toggle-icon .icon {
-  position: absolute;
-  font-size: 22px;
-  color: white;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
+.hidden { display: none; }
 
-/* Initially show bot icon, hide close */
-.toggle-icon .bot {
-  opacity: 1;
-  transform: scale(1);
-}
+.toggle-icon .bot   { opacity: 1; transform: scale(1); }
+.toggle-icon .close { opacity: 0; transform: scale(0.5); }
 
-.toggle-icon .close {
-  opacity: 0;
-  transform: scale(0.5);
-}
+#chat-toggle.active .bot   { opacity: 0; transform: scale(0.5); }
+#chat-toggle.active .close { opacity: 1; transform: scale(1); }
+
 
 /* When active, show close, hide bot */
 #chat-toggle.active .bot {
@@ -1299,6 +1289,13 @@ text-decoration: none;
   opacity: 1;
   transform: scale(1);
 }
+#chat-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;    /* higher than 9999 */
+}
+
 
 @keyframes fadeInLabel {
   from{
@@ -1363,7 +1360,61 @@ text-decoration: none;
     border-radius: 0;
   }
 }
+.toggle-icon {
+  position: relative;
+}
 
+.toggle-icon .icon {
+  position: absolute;
+  font-size: 22px;
+  color: white;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toggle-icon .bot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.toggle-icon .close {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+#chat-toggle.active .bot {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+#chat-toggle.active .close {
+  opacity: 1;
+  transform: scale(1);
+}
+/* Initially show bot image */
+.toggle-icon .bot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hide close icon */
+.toggle-icon .close {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+/* When chat is open, switch icons */
+#chat-toggle.active .bot {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+#chat-toggle.active .close {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+/* Slide In Animation */
 @keyframes slideIn {
   from {
     opacity: 0;

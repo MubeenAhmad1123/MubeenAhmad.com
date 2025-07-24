@@ -674,39 +674,41 @@ https://github.com/MubeenAhmad1123/Landing-Page-WEB-Lift-AI-
 </button>
 <!-- Chat Toggle Button (floating button) -->
  
-<!-- Floating Chat Toggle -->
-<!-- Floating Chat Toggle -->
-<div id="chat-toggle" onclick="toggleChat()">
-  <div class="chat-badge">
-    <span class="wave">👋🏼</span> 
-    <span class="chat-text">Let's Chat</span>
-  </div>
-  <div class="bot-icon toggle-icon">
-    <span class="icon bot">    <img src="img/bot-avatar.webp" alt="bot-img" style="width: 100%; height: 100%; border-radius: 50%;"></span>
-    <span class="icon close">✖</span>
-  </div>
-</div>
-
-
-
-
-<!-- Chatbot Container -->
-<div id="chatbot-container" class="hidden">
-  <div class="chat-header">
-    Chat with Us
-    <span onclick="toggleChat()" style="cursor:pointer;">❌</span>
+ <!-- Floating Chat Toggle -->
+  <div id="chat-toggle">
+    <div class="chat-badge">
+      <span class="wave">👋🏼</span>
+      <span class="chat-text">Let's Chat</span>
+    </div>
+    <div class="bot-icon toggle-icon">
+      <span class="icon bot">
+        <img src="img/bot-avatar.webp" alt="bot avatar">
+      </span>
+      <span class="icon close">❌</span>
+    </div>
   </div>
 
-  <div id="chat-body" class="chat-body"></div>
+  <!-- Chatbot Container -->
+  <div id="chatbot-container" class="hidden">
+    <div class="chat-header">
+      <span>Chat with Us</span>
+      <!-- close inside header -->
+      <button id="chat-close" aria-label="Close chat">✖</button>
+    </div>
 
-  <div class="chat-input">
+    <div id="chat-body" class="chat-body"></div>
 
-<div id="quick-replies" class="quick-replies"></div>
-
-    <input type="text" id="user-input" onkeydown="checkEnter(event)" placeholder="Type your message..." />
-    <button onclick="sendMessage()">Send</button>
+    <div class="chat-input">
+      <div id="quick-replies" class="quick-replies"></div>
+      <input
+        type="text"
+        id="user-input"
+        onkeydown="checkEnter(event)"
+        placeholder="Type your message..."
+      />
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
-</div>
 
     <script src="script.js"></script>
 </body>

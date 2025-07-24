@@ -1,1 +1,903 @@
-let userName="",lastTopic="";function toggleTheme(){let e=document.body,t=document.getElementById("theme-icon"),s=document.getElementById("profile-img");if(!t){console.error("Theme icon element not found");return}let n=e.classList.contains("theme-midnight-gold");e.classList.remove("theme-midnight-gold","theme-neon-cyber"),n?(e.classList.add("theme-neon-cyber"),t.className="fas fa-sun",s&&(s.src="img/profile1.webp"),window.selectedTheme="theme-neon-cyber"):(e.classList.add("theme-midnight-gold"),t.className="fas fa-moon",s&&(s.src="img/profile.webp"),window.selectedTheme="theme-midnight-gold")}function toggleMobileMenu(){let e=document.querySelector(".nav-links"),t=document.getElementById("menu-icon");if(!e||!t){console.error("Navigation elements not found");return}e.classList.toggle("active"),t.classList.toggle("rotate"),t.classList.toggle("fa-times"),t.classList.toggle("fa-bars")}function toggleChat(){let e=document.getElementById("chatbot-container"),t=document.querySelector(".chat-label"),s=document.getElementById("chat-toggle");if(!e||!s){console.error("Required elements not found");return}e.classList.toggle("hidden"),t&&t.classList.remove("visible"),s.classList.toggle("active")}document.addEventListener("DOMContentLoaded",()=>{document.querySelector(".chat-label").classList.add("visible");let e=document.getElementById("theme-icon"),t=document.getElementById("profile-img"),s=window.selectedTheme||"theme-midnight-gold";document.body.classList.remove("theme-midnight-gold","theme-neon-cyber"),"theme-neon-cyber"===s?(document.body.classList.add("theme-neon-cyber"),e&&(e.className="fas fa-sun"),t&&(t.src="img/profile1.webp")):(document.body.classList.add("theme-neon-cyber"),e&&(e.className="fas fa-moon"),t&&(t.src="img/profile.webp")),document.querySelectorAll("[data-animate]").forEach(e=>{e.classList.add("animate")}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();let t=document.querySelector(this.getAttribute("href"));t&&t.scrollIntoView({behavior:"smooth",block:"start"})})});let n=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&e.target.classList.add("animate-on-scroll")})},{threshold:.1,rootMargin:"0px 0px -50px 0px"});document.querySelectorAll("section").forEach(e=>n.observe(e));let a=document.querySelector("form");a&&a.addEventListener("submit",function(e){e.preventDefault(),alert("Thank you for your message! I will get back to you soon."),this.reset()})}),window.addEventListener("scroll",()=>{let e=document.querySelector("nav");e&&(e.style.background="var(--bg-card)",e.style.backdropFilter=window.scrollY>100?"blur(20px)":"blur(10px)")});const backToTopBtn=document.getElementById("backToTop");backToTopBtn&&(window.addEventListener("scroll",()=>{backToTopBtn.style.display=window.scrollY>300?"block":"none"}),backToTopBtn.addEventListener("click",()=>{window.scrollTo({top:0,behavior:"smooth"})}));const skills=["Front-End Developer","UI Designer","Video Editor","LinkedIn Content Strategist","Creative Technologist"],skillElement=document.getElementById("typed-skill");if(skillElement){let e=0,t=0,s=!1;function n(){let a=skills[e];skillElement.textContent=s?a.substring(0,--t):a.substring(0,++t);let i=s?50:100;s||t!==a.length?s&&0===t&&(s=!1,e=(e+1)%skills.length,i=500):(i=1500,s=!0),setTimeout(n,i)}n()}class TrainableChatbot{constructor(){this.conversationHistory=[],this.userProfile={name:"",interests:[],projectType:"",budget:"",timeline:"",visitCount:0},this.currentTopic="",this.lastResponseType="",this.recentResponses=[],this.maxRecentResponses=3,this.trainingData={intents:{},responses:{},entities:{},patterns:{},faq:{},customRules:[]},this.init(),this.loadTrainingData()}async loadTrainingData(){this.loadDefaultTrainingData(),this.loadMubeenPersonalData(),await this.loadCustomTrainingData()}loadDefaultTrainingData(){this.trainingData.intents={},this.trainingData.faq={},this.trainingData.customRules=[]}async loadCustomTrainingData(){try{let e=await fetch("./data/training_data.json");if(e.ok){let t=await e.json();this.mergeTrainingData(t)}}catch(s){console.log("No custom training file found, using defaults")}}mergeTrainingData(e){Object.keys(e).forEach(t=>{this.trainingData[t]?"intents"===t?Object.keys(e[t]).forEach(s=>{this.trainingData[t][s]=e[t][s]}):"customRules"===t?this.trainingData[t].push(...e[t]):this.trainingData[t]={...this.trainingData[t],...e[t]}:this.trainingData[t]=e[t]})}detectIntent(e){let t=this.preprocessMessage(e),s={intent:"general",score:0};for(let n of this.trainingData.customRules)if(n.pattern.test(t))return"custom_"+this.trainingData.customRules.indexOf(n);let a=this.findFAQMatch(t);return a?"faq":(Object.entries(this.trainingData.intents).forEach(([e,n])=>{let a=this.calculateIntentScore(t,n.patterns);a>s.score&&(s={intent:e,score:a})}),s.score>.2?s.intent:"general")}preprocessMessage(e){let t=e.toLowerCase().trim(),s={wat:"what",u:"you",ur:"your",r:"are",plz:"please",thx:"thanks",ty:"thank you","web dev":"web development",frontend:"front end",backend:"back end"},n=t;return Object.keys(s).forEach(e=>{let t=RegExp(`\\b${e}\\b`,"g");n=n.replace(t,s[e])}),n}calculateIntentScore(e,t){let s=0,n=e.split(" ").filter(e=>e.length>2);return t.forEach(t=>{let a=0,i=t.toLowerCase().split(" ").filter(e=>e.length>2);if(e===t.toLowerCase())a=3;else if(e.includes(t.toLowerCase()))a=2.5;else if(t.toLowerCase().includes(e))a=2;else{let o=0,r=Math.max(i.length,n.length);i.forEach(e=>{n.forEach(t=>{t===e?o+=1:t.length>3&&e.length>3&&(t.includes(e)||e.includes(t))&&(o+=.8)})}),a=o/r,n.length<=2&&o>0&&(a+=.3)}s=Math.max(s,a)}),s}findFAQMatch(e){let t=Object.keys(this.trainingData.faq);if(this.trainingData.faq[e])return e;for(let s of t)if(this.calculateSimilarity(e,s)>.6)return s;return null}calculateSimilarity(e,t){let s=e.toLowerCase().split(" "),n=t.toLowerCase().split(" "),a=0;return s.forEach(e=>{n.some(t=>t.includes(e)||e.includes(t))&&a++}),a/Math.max(s.length,n.length)}generateResponse(e,t,s){let n="";if(e.startsWith("custom_")){let a=parseInt(e.split("_")[1]),i=this.trainingData.customRules[a];n=this.personalizeResponse(i.response,t)}else if("faq"===e){let o=this.findFAQMatch(s.toLowerCase());o&&(n=this.personalizeResponse(this.trainingData.faq[o],t))}else if(this.trainingData.intents[e]){let r=this.trainingData.intents[e].responses,l=r.filter(e=>!this.recentResponses.includes(e));0===l.length&&(l=r,this.recentResponses=[]);let c=l[Math.floor(Math.random()*l.length)];n=this.personalizeResponse(c,t),this.recentResponses.push(c),this.recentResponses.length>this.maxRecentResponses&&this.recentResponses.shift()}else n=this.generateFallbackResponse(s);return this.lastResponseType=e,n}personalizeResponse(e,t){let s=e;return t.name&&this.userProfile.name&&(s=s.replace(/\{name\}/g,this.userProfile.name)),t.budget&&(s=s.replace(/\{budget\}/g,t.budget)),t.projectType&&(s=s.replace(/\{projectType\}/g,t.projectType)),s}generateFallbackResponse(e){let t=["ok","okay","cool","nice","good","great","awesome","thanks","wow"].some(t=>e.toLowerCase().includes(t));if(t)return this.getUniqueResponse(["Glad you're interested! \uD83D\uDE0A What else would you like to know?","Thanks! \uD83C\uDF1F Any questions about my projects, skills, or services?","Awesome! \uD83D\uDE80 Feel free to ask about web development or my work!","Great! \uD83D\uDCAB What would you like to explore next?","Perfect! \uD83C\uDFAF How else can I help you today?"]);let s=["pizza","food","weather","music","movies","sports"].some(t=>e.toLowerCase().includes(t));return s?this.getUniqueResponse(["Haha! While I'd love to chat about that, I'm here to help with web development! \uD83D\uDE04 Got any coding questions?","That's interesting! But I'm much better at talking about websites than that topic! \uD83D\uDCBB What can I build for you?","Ha! I prefer coding to that topic! \uD83D\uDE0A Let's talk about web development - what project do you have in mind?"]):this.getUniqueResponse(["I'm still learning! Could you rephrase that or ask about my skills, projects, pricing, or services? \uD83E\uDD14","Hmm, I didn't quite catch that. Try asking about my web development services, experience, or portfolio! \uD83D\uDCBB","Not sure about that one! Feel free to ask about my projects, technical skills, or how I can help you! \uD83D\uDE80","Let me help you better! Try asking about pricing, my background, or what services I offer! \uD83D\uDE0A"])}getUniqueResponse(e){let t=e.filter(e=>!this.recentResponses.includes(e));0===t.length&&(t=e,this.recentResponses=[]);let s=t[Math.floor(Math.random()*t.length)];return this.recentResponses.push(s),this.recentResponses.length>this.maxRecentResponses&&this.recentResponses.shift(),s}extractKeywords(e){let t=["the","a","an","and","or","but","in","on","at","to","for","of","with","by","is","are","was","were"];return e.toLowerCase().replace(/[^\w\s]/g,"").split(" ").filter(e=>e.length>2&&!t.includes(e))}saveTrainingData(){console.log("Training data updated in memory")}exportTrainingData(){return JSON.stringify(this.trainingData,null,2)}init(){document.addEventListener("DOMContentLoaded",()=>{this.displayInitialGreeting()})}displayInitialGreeting(){let e=["Hi there! \uD83D\uDC4B I'm Mubeen Ahmad, a Creative Front-End Developer. How can I help you today?","Hello! \uD83D\uDE0A Great to see you! I'm Mubeen - what brings you here?","Hey! \uD83C\uDF1F Welcome to my space! I'm a front-end developer ready to help with your projects!"],t=e[Math.floor(Math.random()*e.length)];setTimeout(()=>{this.displayMessage("bot",t),this.showSuggestions([{label:"\uD83D\uDC4B About Me",value:"Tell me about yourself"},{label:"\uD83D\uDCBB My Skills",value:"What are your technical skills?"},{label:"\uD83D\uDE80 My Projects",value:"Show me your projects"},{label:"\uD83D\uDCB0 Pricing",value:"What are your rates?"},{label:"\uD83D\uDCDE Contact",value:"How can I contact you?"}])},1e3)}sendMessage(){let e=document.getElementById("user-input");if(!e)return;let t=e.value.trim();if(!t)return;this.clearSuggestions(),this.displayMessage("user",t),this.displayTyping();let s=this.preprocessMessage(t),n=null,a=Object.keys(botFAQs).find(e=>e.toLowerCase()===s.toLowerCase());if(a&&(n=botFAQs[a]),!n){let i={key:null,score:0};Object.keys(botFAQs).forEach(e=>{let t=e.toLowerCase(),n=s.toLowerCase(),a=0;if(n.includes(t))a=100;else{let o=t.split(/\s+/),r=n.split(/\s+/),l=o.filter(e=>r.some(t=>t.includes(e)||e.includes(t)));a=l.length/o.length*80}a>i.score&&a>50&&(i={key:e,score:a})}),i.key&&(n=botFAQs[i.key])}let o=n?n.response:this.processMessage(t),r=n&&n.quick_replies?n.quick_replies:[],l=Math.min(800+20*o.length,2500);setTimeout(()=>{if(this.removeTyping(),this.displayMessage("bot",o),r.length>0){let e=r.map(e=>({label:e,value:e}));this.showSuggestions(e)}else this.clearSuggestions()},l),e.value=""}preprocessMessage(e){let t=e.toLowerCase().trim(),s={wat:"what",u:"you",ur:"your",r:"are",plz:"please",thx:"thanks",ty:"thank you","web dev":"web development",frontend:"front end",backend:"back end",website:"site",webpage:"site"};return Object.keys(s).forEach(e=>{let n=RegExp(`\\b${e}\\b`,"g");t=t.replace(n,s[e])}),t}findFAQMatch(e){let t=e.toLowerCase();for(let s in botFAQs)if(t.includes(s.toLowerCase()))return botFAQs[s];let n=t.split(/\s+/);for(let a in botFAQs){let i=a.toLowerCase().split(/\s+/),o=i.filter(e=>n.some(t=>t.includes(e)||e.includes(t))).length;if(o>i.length/2)return botFAQs[a]}return null}processMessage(e){this.conversationHistory.push({sender:"user",message:e,timestamp:Date.now()});let t=this.extractEntities(e),s=this.detectIntent(e);console.log(`Detected intent: ${s} for message: "${e}"`),this.updateUserProfile(t),this.currentTopic=s;let n=this.generateResponse(s,t,e),a=botFAQs[s];if(a&&a.quick_replies&&a.quick_replies.length>0){let i=a.quick_replies.map(e=>({label:e,value:e}));this.showSuggestions(i)}else this.clearSuggestions();return this.conversationHistory.push({sender:"bot",message:n,timestamp:Date.now()}),n}extractEntities(e){let t={},s=e.match(/(?:my name is|i'm|i am)\s+([a-zA-Z]+)/i);s&&(t.name=s[1]);let n=e.match(/\$?(\d+(?:,\d{3})*(?:\.\d{2})?)/);n&&(t.budget=n[1]);let a=e.match(/(\d+)\s*(days?|weeks?|months?|hours?)/i);return a&&(t.timeframe=`${a[1]} ${a[2]}`),["website","landing page","e-commerce","blog","portfolio","dashboard","app"].forEach(s=>{e.toLowerCase().includes(s)&&(t.projectType=s)}),t}updateUserProfile(e){e.name&&(this.userProfile.name=e.name.charAt(0).toUpperCase()+e.name.slice(1)),e.budget&&(this.userProfile.budget=e.budget),e.timeframe&&(this.userProfile.timeline=e.timeframe),e.projectType&&(this.userProfile.projectType=e.projectType,this.userProfile.interests.includes(e.projectType)||this.userProfile.interests.push(e.projectType)),this.userProfile.visitCount++}displayMessage(e,t){let s=document.getElementById("chat-body");if(!s)return;let n=document.createElement("div");n.classList.add("message",e);let a=document.createElement("img");a.classList.add("avatar"),a.src="user"===e?"img/user-avatar.webp":"img/bot-avatar.webp",a.alt="user"===e?this.userProfile.name||"You":"Mubeen";let i=document.createElement("div");i.classList.add("text"),i.style.whiteSpace="pre-line",i.textContent=t,n.appendChild(a),n.appendChild(i),s.appendChild(n),s.scrollTop=s.scrollHeight}displayTyping(){let e=document.getElementById("chat-body");if(!e)return;let t=document.createElement("div");t.classList.add("message","bot"),t.id="typing-indicator";let s=document.createElement("img");s.classList.add("avatar"),s.src="img/bot-avatar.webp",s.alt="Mubeen";let n=document.createElement("div");n.classList.add("typing-dots"),n.innerHTML="<span></span><span></span><span></span>",t.appendChild(s),t.appendChild(n),e.appendChild(t),e.scrollTop=e.scrollHeight}removeTyping(){let e=document.getElementById("typing-indicator");e&&e.remove()}showSuggestions(e){let t=document.getElementById("quick-replies");t&&(t.innerHTML="",e.forEach(e=>{let s=document.createElement("button");s.textContent=e.label,s.classList.add("quick-btn"),s.onclick=()=>{let t=document.getElementById("user-input");t&&(t.value=e.value,this.sendMessage(),this.clearSuggestions())},t.appendChild(s)}),t.scrollIntoView({behavior:"smooth",block:"end"}))}clearSuggestions(){let e=document.getElementById("quick-replies");e&&(e.innerHTML="")}checkEnter(e){"Enter"===e.key&&this.sendMessage()}addIntent(e,t,s){this.trainingData.intents[e]||(this.trainingData.intents[e]={patterns:[],responses:[]}),this.trainingData.intents[e].patterns.push(...t),this.trainingData.intents[e].responses.push(...s),this.saveTrainingData()}addFAQ(e,t){this.trainingData.faq[e.toLowerCase()]=t,this.saveTrainingData()}addCustomPattern(e,t,s=1){this.trainingData.customRules.push({pattern:RegExp(e,"i"),response:t,priority:s}),this.saveTrainingData()}}const chatbot=new TrainableChatbot;function findAdvancedFAQMatch(e){let t=e.toLowerCase();for(let[s,n]of Object.entries(advancedBotFAQs))for(let a of n.triggers)if(t.includes(a.toLowerCase()))return n;return null}function sendMessage(){chatbot.sendMessage()}function checkEnter(e){chatbot.checkEnter(e)}function exportTrainingData(){let e=chatbot.exportTrainingData();return console.log("Training data exported:",e),e}function testChatbot(){console.log("Testing Mubeen's chatbot:"),console.log("Available intents:",Object.keys(chatbot.trainingData.intents)),console.log("FAQ items:",Object.keys(chatbot.trainingData.faq)),console.log("Custom rules:",chatbot.trainingData.customRules.length),["hello","hi","intro","skills","projects","pricing"].forEach(e=>{let t=chatbot.detectIntent(e);console.log(`"${e}" -> Intent: ${t}`)})}window.chatbot=chatbot,window.testChatbot=testChatbot;
+let userName = "";
+let lastTopic = "";
+
+// ------------------ THEME TOGGLER ------------------
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('theme-icon');
+    const profileImg = document.getElementById('profile-img');
+    
+    // Check if elements exist before proceeding
+    if (!themeIcon) {
+        console.error('Theme icon element not found');
+        return;
+    }
+    
+    const isMidnight = body.classList.contains('theme-midnight-gold');
+
+    body.classList.remove('theme-midnight-gold', 'theme-neon-cyber');
+
+    if (isMidnight) {
+        body.classList.add('theme-neon-cyber');
+        themeIcon.className = 'fas fa-sun';
+        if (profileImg) {
+            profileImg.src = 'img/profile1.webp';
+        }
+        // Store theme in memory instead of localStorage
+        window.selectedTheme = 'theme-neon-cyber';
+    } else {
+        body.classList.add('theme-midnight-gold');
+        themeIcon.className = 'fas fa-moon';
+        if (profileImg) {
+            profileImg.src = 'img/profile.webp';
+        }
+        // Store theme in memory instead of localStorage
+        window.selectedTheme = 'theme-midnight-gold';
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const chatToggle    = document.getElementById("chat-toggle");
+  const chatContainer = document.getElementById("chatbot-container");
+  const chatClose     = document.getElementById("chat-close");
+
+  if (!chatToggle || !chatContainer || !chatClose) {
+    console.error("Missing chat elements");
+    return;
+  }
+
+  function toggleChat() {
+    chatToggle.classList.toggle("active");
+    chatContainer.classList.toggle("hidden");
+  }
+
+  // Bind opening and closing
+  chatToggle.addEventListener("click", toggleChat);
+  chatClose.addEventListener("click", toggleChat);
+
+  // Expose globally if still using inline:
+  window.toggleChat = toggleChat;
+});
+
+
+    // --- INITIAL ANIMATION ---
+    document.querySelectorAll('[data-animate]').forEach(el => {
+        el.classList.add('animate');
+    });
+
+    // --- SMOOTH SCROLL ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // --- SCROLL OBSERVER ANIMATIONS ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-on-scroll');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
+
+  
+
+    // --- FORM SUBMISSION ---
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('Thank you for your message! I will get back to you soon.');
+            this.reset();
+        });
+    }
+
+
+// --- NAVBAR SCROLL STYLE CHANGE ---
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (nav) {
+        nav.style.background = 'var(--bg-card)';
+        nav.style.backdropFilter = window.scrollY > 100 ? 'blur(20px)' : 'blur(10px)';
+    }
+});
+// ------------------ BACK TO TOP ------------------
+const backToTopBtn = document.getElementById("backToTop");
+if (backToTopBtn) {
+    window.addEventListener("scroll", () => {
+        backToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
+    });
+    backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+}
+
+// ------------------ TYPEWRITER ------------------
+const skills = [
+    "Front-End Developer",
+    "UI Designer",
+    "Video Editor",
+    "LinkedIn Content Strategist",
+    "Creative Technologist"
+];
+
+const skillElement = document.getElementById("typed-skill");
+if (skillElement) {
+    const typingSpeed = 100, deletingSpeed = 50;
+    const pauseAfterTyping = 1500, pauseBeforeTyping = 500;
+    let skillIndex = 0, charIndex = 0, isDeleting = false;
+
+    function typeEffect() {
+        const current = skills[skillIndex];
+        skillElement.textContent = isDeleting
+            ? current.substring(0, --charIndex)
+            : current.substring(0, ++charIndex);
+
+        let delay = isDeleting ? deletingSpeed : typingSpeed;
+
+        if (!isDeleting && charIndex === current.length) {
+            delay = pauseAfterTyping;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            skillIndex = (skillIndex + 1) % skills.length;
+            delay = pauseBeforeTyping;
+        }
+
+        setTimeout(typeEffect, delay);
+    }
+    typeEffect();
+}
+// ==================== FIXED TRAINABLE CHATBOT WITH IMPROVED RESPONSES ====================
+
+class TrainableChatbot {
+    constructor() {
+        this.conversationHistory = [];
+        this.userProfile = {
+            name: "",
+            interests: [],
+            projectType: "",
+            budget: "",
+            timeline: "",
+            visitCount: 0
+        };
+        this.currentTopic = "";
+        this.lastResponseType = ""; // Track last response type to avoid repetition
+          this.recentResponses = []; // Add this line
+    this.maxRecentResponses = 3; 
+        // Training data structures
+        this.trainingData = {
+            intents: {},
+            responses: {},
+            entities: {},
+            patterns: {},
+            faq: {},
+            customRules: []
+        };
+        
+        this.init();
+        this.loadTrainingData();
+    }
+
+    // ==================== IMPROVED TRAINING DATA LOADING ====================
+    async loadTrainingData() {
+        // Load default training data first
+        this.loadDefaultTrainingData();
+        
+        // Load Mubeen's personal data
+        this.loadMubeenPersonalData();
+        
+        // Load custom training data
+        await this.loadCustomTrainingData();
+    }
+
+    // ⭐ IMPROVED MUBEEN'S DATA WITH BETTER PATTERN MATCHING ⭐
+
+
+    loadDefaultTrainingData() {
+        // Initialize base structure
+        this.trainingData.intents = {};
+        this.trainingData.faq = {};
+        this.trainingData.customRules = [];
+    }
+
+    async loadCustomTrainingData() {
+        try {
+            const response = await fetch('./data/training_data.json');
+            if (response.ok) {
+                const customData = await response.json();
+                this.mergeTrainingData(customData);
+            }
+        } catch (error) {
+            console.log('No custom training file found, using defaults');
+        }
+    }
+
+    mergeTrainingData(newData) {
+        Object.keys(newData).forEach(key => {
+            if (this.trainingData[key]) {
+                if (key === 'intents') {
+                    Object.keys(newData[key]).forEach(intent => {
+                        this.trainingData[key][intent] = newData[key][intent];
+                    });
+                } else if (key === 'customRules') {
+                    this.trainingData[key].push(...newData[key]);
+                } else {
+                    this.trainingData[key] = { ...this.trainingData[key], ...newData[key] };
+                }
+            } else {
+                this.trainingData[key] = newData[key];
+            }
+        });
+    }
+
+    // ==================== IMPROVED INTENT DETECTION ====================
+    detectIntent(message) {
+      
+      
+const text = this.preprocessMessage(message); // Add this line
+    let bestMatch = { intent: 'general', score: 0 };
+
+        // Check custom rules first
+        for (const rule of this.trainingData.customRules) {
+            if (rule.pattern.test(text)) {
+                return 'custom_' + this.trainingData.customRules.indexOf(rule);
+            }
+        }
+
+        // Check FAQ exact matches
+        const faqMatch = this.findFAQMatch(text);
+        if (faqMatch) {
+            return 'faq';
+        }
+
+        // Check trained intents with improved scoring
+        Object.entries(this.trainingData.intents).forEach(([intent, data]) => {
+            const score = this.calculateIntentScore(text, data.patterns);
+            if (score > bestMatch.score) {
+                bestMatch = { intent, score };
+            }
+        });
+
+        // Lower threshold for better matching
+        return bestMatch.score > 0.2 ? bestMatch.intent : 'general';
+    }
+    // ----------------- Global Bot FAQs ------------------
+
+// Add this new function after detectIntent
+preprocessMessage(message) {
+    const text = message.toLowerCase().trim();
+    
+    // Handle variations and common typos
+    const variations = {
+        'wat': 'what',
+        'u': 'you',
+        'ur': 'your',
+        'r': 'are',
+        'plz': 'please',
+        'thx': 'thanks',
+        'ty': 'thank you',
+        'web dev': 'web development',
+        'frontend': 'front end',
+        'backend': 'back end'
+    };
+    
+    let processedText = text;
+    Object.keys(variations).forEach(key => {
+        const regex = new RegExp(`\\b${key}\\b`, 'g');
+        processedText = processedText.replace(regex, variations[key]);
+    });
+    
+    return processedText;
+}
+    // ==================== IMPROVED SCORING ALGORITHM ====================
+  calculateIntentScore(text, patterns) {
+    let maxScore = 0;
+    const textWords = text.split(' ').filter(word => word.length > 2);
+    
+    patterns.forEach(pattern => {
+        let score = 0;
+        const patternWords = pattern.toLowerCase().split(' ').filter(word => word.length > 2);
+        
+        // Exact match gets highest score
+        if (text === pattern.toLowerCase()) {
+            score = 3.0;
+        }
+        // Check if text contains the complete pattern or vice versa
+        else if (text.includes(pattern.toLowerCase())) {
+            score = 2.5;
+        }
+        else if (pattern.toLowerCase().includes(text)) {
+            score = 2.0;
+        }
+        // Check for partial matches with higher threshold
+        else {
+            let wordMatches = 0;
+            let totalWords = Math.max(patternWords.length, textWords.length);
+            
+            patternWords.forEach(patternWord => {
+                textWords.forEach(textWord => {
+                    // Exact word match
+                    if (textWord === patternWord) {
+                        wordMatches += 1.0;
+                    }
+                    // Partial word match (both directions)
+                    else if (textWord.length > 3 && patternWord.length > 3) {
+                        if (textWord.includes(patternWord) || patternWord.includes(textWord)) {
+                            wordMatches += 0.8;
+                        }
+                    }
+                });
+            });
+            
+            // Higher threshold for word matching
+            score = wordMatches / totalWords;
+            
+            // Bonus for shorter queries that match well
+            if (textWords.length <= 2 && wordMatches > 0) {
+                score += 0.3;
+            }
+        }
+        
+        maxScore = Math.max(maxScore, score);
+    });
+
+    return maxScore;
+}
+    findFAQMatch(text) {
+        const faqKeys = Object.keys(this.trainingData.faq);
+        
+        if (this.trainingData.faq[text]) {
+            return text;
+        }
+        
+        for (const key of faqKeys) {
+            if (this.calculateSimilarity(text, key) > 0.6) {
+                return key;
+            }
+        }
+        
+        return null;
+    }
+
+    calculateSimilarity(str1, str2) {
+        const words1 = str1.toLowerCase().split(' ');
+        const words2 = str2.toLowerCase().split(' ');
+        
+        let matches = 0;
+        words1.forEach(word => {
+            if (words2.some(w => w.includes(word) || word.includes(w))) {
+                matches++;
+            }
+        });
+        
+        return matches / Math.max(words1.length, words2.length);
+    }
+
+    // ==================== IMPROVED RESPONSE GENERATION ====================
+    generateResponse(intent, entities, message) {
+    let response = '';
+    
+    if (intent.startsWith('custom_')) {
+        const ruleIndex = parseInt(intent.split('_')[1]);
+        const rule = this.trainingData.customRules[ruleIndex];
+        response = this.personalizeResponse(rule.response, entities);
+    }
+    else if (intent === 'faq') {
+        const faqKey = this.findFAQMatch(message.toLowerCase());
+        if (faqKey) {
+            response = this.personalizeResponse(this.trainingData.faq[faqKey], entities);
+        }
+    }
+    else if (this.trainingData.intents[intent]) {
+        const responses = this.trainingData.intents[intent].responses;
+        
+        // Filter out recently used responses
+        let availableResponses = responses.filter(r => !this.recentResponses.includes(r));
+        if (availableResponses.length === 0) {
+            // If all responses were recent, use all but clear the recent list
+            availableResponses = responses;
+            this.recentResponses = [];
+        }
+        
+        const randomResponse = availableResponses[Math.floor(Math.random() * availableResponses.length)];
+        response = this.personalizeResponse(randomResponse, entities);
+        
+        // Track this response
+        this.recentResponses.push(randomResponse);
+        if (this.recentResponses.length > this.maxRecentResponses) {
+            this.recentResponses.shift(); // Remove oldest
+        }
+    }
+    else {
+        response = this.generateFallbackResponse(message);
+    }
+
+    this.lastResponseType = intent;
+    return response;
+}
+    personalizeResponse(response, entities) {
+        let personalizedResponse = response;
+        
+        if (entities.name && this.userProfile.name) {
+            personalizedResponse = personalizedResponse.replace(/\{name\}/g, this.userProfile.name);
+        }
+        
+        if (entities.budget) {
+            personalizedResponse = personalizedResponse.replace(/\{budget\}/g, entities.budget);
+        }
+        
+        if (entities.projectType) {
+            personalizedResponse = personalizedResponse.replace(/\{projectType\}/g, entities.projectType);
+        }
+
+        return personalizedResponse;
+    }
+
+    // ==================== IMPROVED FALLBACK RESPONSES ====================
+    generateFallbackResponse(message) {
+    // Check if the message might be a casual response
+    const casualWords = ['ok', 'okay', 'cool', 'nice', 'good', 'great', 'awesome', 'thanks', 'wow'];
+    const isCasual = casualWords.some(word => message.toLowerCase().includes(word));
+    
+    if (isCasual) {
+        const casualResponses = [
+            "Glad you're interested! 😊 What else would you like to know?",
+            "Thanks! 🌟 Any questions about my projects, skills, or services?",
+            "Awesome! 🚀 Feel free to ask about web development or my work!",
+            "Great! 💫 What would you like to explore next?",
+            "Perfect! 🎯 How else can I help you today?"
+        ];
+        return this.getUniqueResponse(casualResponses);
+    }
+    
+    // Check if asking about pizza or random topics
+    const randomTopics = ['pizza', 'food', 'weather', 'music', 'movies', 'sports'];
+    const isRandom = randomTopics.some(topic => message.toLowerCase().includes(topic));
+    
+    if (isRandom) {
+        const funResponses = [
+            "Haha! While I'd love to chat about that, I'm here to help with web development! 😄 Got any coding questions?",
+            "That's interesting! But I'm much better at talking about websites than that topic! 💻 What can I build for you?",
+            "Ha! I prefer coding to that topic! 😊 Let's talk about web development - what project do you have in mind?"
+        ];
+        return this.getUniqueResponse(funResponses);
+    }
+    
+    // Default fallback responses
+    const fallbackResponses = [
+        "I'm still learning! Could you rephrase that or ask about my skills, projects, pricing, or services? 🤔",
+        "Hmm, I didn't quite catch that. Try asking about my web development services, experience, or portfolio! 💻",
+        "Not sure about that one! Feel free to ask about my projects, technical skills, or how I can help you! 🚀",
+        "Let me help you better! Try asking about pricing, my background, or what services I offer! 😊"
+    ];
+    
+    return this.getUniqueResponse(fallbackResponses);
+}
+
+// Add this new helper function after generateFallbackResponse
+getUniqueResponse(responses) {
+    let availableResponses = responses.filter(r => !this.recentResponses.includes(r));
+    if (availableResponses.length === 0) {
+        availableResponses = responses;
+        this.recentResponses = [];
+    }
+    
+    const selectedResponse = availableResponses[Math.floor(Math.random() * availableResponses.length)];
+    
+    // Track this response to avoid repetition
+    this.recentResponses.push(selectedResponse);
+    if (this.recentResponses.length > this.maxRecentResponses) {
+        this.recentResponses.shift();
+    }
+    
+    return selectedResponse;
+}
+    extractKeywords(text) {
+        const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were'];
+        return text.toLowerCase()
+            .replace(/[^\w\s]/g, '')
+            .split(' ')
+            .filter(word => word.length > 2 && !stopWords.includes(word));
+    }
+
+    saveTrainingData() {
+        console.log('Training data updated in memory');
+    }
+
+    exportTrainingData() {
+        return JSON.stringify(this.trainingData, null, 2);
+    }
+
+    init() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.displayInitialGreeting();
+        });
+    }
+
+    displayInitialGreeting() {
+        const greetings = [
+            "Hi there! 👋 I'm Mubeen Ahmad, a Creative Front-End Developer. How can I help you today?",
+            "Hello! 😊 Great to see you! I'm Mubeen - what brings you here?",
+            "Hey! 🌟 Welcome to my space! I'm a front-end developer ready to help with your projects!"
+        ];
+        
+        const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+        
+        setTimeout(() => {
+            this.displayMessage("bot", greeting);
+            this.showSuggestions([
+                { label: "👋 About Me", value: "Tell me about yourself" },
+                { label: "💻 My Skills", value: "What are your technical skills?" },
+                { label: "🚀 My Projects", value: "Show me your projects" },
+                { label: "💰 Pricing", value: "What are your rates?" },
+                { label: "📞 Contact", value: "How can I contact you?" }
+            ]);
+        }, 1000);
+    }
+
+sendMessage() {
+    const input = document.getElementById("user-input");
+    if (!input) return;
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    this.clearSuggestions();
+    this.displayMessage("user", message);
+    this.displayTyping();
+
+    // Preprocess the message for better matching
+    const processedMessage = this.preprocessMessage(message);
+    let matchedEntry = null;
+
+    // Try exact match first (case-insensitive)
+    const exactKey = Object.keys(botFAQs).find(key => 
+        key.toLowerCase() === processedMessage.toLowerCase()
+    );
+    
+    if (exactKey) {
+        matchedEntry = botFAQs[exactKey];
+    }
+
+    // If no exact match, try partial matching with priority scoring
+    if (!matchedEntry) {
+        let bestMatch = { key: null, score: 0 };
+        
+        Object.keys(botFAQs).forEach(key => {
+            const keyLower = key.toLowerCase();
+            const msgLower = processedMessage.toLowerCase();
+            
+            // Calculate match score
+            let score = 0;
+            
+            // Exact phrase match gets highest score
+            if (msgLower.includes(keyLower)) {
+                score = 100;
+            }
+            // Word-by-word matching
+            else {
+                const keyWords = keyLower.split(/\s+/);
+                const msgWords = msgLower.split(/\s+/);
+                
+                const matchingWords = keyWords.filter(keyWord =>
+                    msgWords.some(msgWord => 
+                        msgWord.includes(keyWord) || keyWord.includes(msgWord)
+                    )
+                );
+                
+                score = (matchingWords.length / keyWords.length) * 80;
+            }
+            
+            if (score > bestMatch.score && score > 50) {
+                bestMatch = { key, score };
+            }
+        });
+        
+        if (bestMatch.key) {
+            matchedEntry = botFAQs[bestMatch.key];
+        }
+    }
+
+    // Use matched response or fallback
+    let response = matchedEntry ? matchedEntry.response : this.processMessage(message);
+    const quickReplies = matchedEntry && matchedEntry.quick_replies ? matchedEntry.quick_replies : [];
+
+    const delay = Math.min(800 + response.length * 20, 2500);
+
+    setTimeout(() => {
+        this.removeTyping();
+        this.displayMessage("bot", response);
+
+        // Show quick reply buttons
+        if (quickReplies.length > 0) {
+            const suggestions = quickReplies.map(text => ({ 
+                label: text, 
+                value: text 
+            }));
+            this.showSuggestions(suggestions);
+        } else {
+            this.clearSuggestions();
+        }
+    }, delay);
+
+    input.value = "";
+}
+
+// Enhanced preprocessing function
+preprocessMessage(message) {
+    let text = message.toLowerCase().trim();
+    
+    // Handle common variations and typos
+    const variations = {
+        'wat': 'what',
+        'u': 'you',
+        'ur': 'your',
+        'r': 'are',
+        'plz': 'please',
+        'thx': 'thanks',
+        'ty': 'thank you',
+        'web dev': 'web development',
+        'frontend': 'front end',
+        'backend': 'back end',
+        'website': 'site',
+        'webpage': 'site'
+    };
+    
+    Object.keys(variations).forEach(key => {
+        const regex = new RegExp(`\\b${key}\\b`, 'g');
+        text = text.replace(regex, variations[key]);
+    });
+    
+    return text;
+}
+
+// Enhanced findFAQMatch function for better matching
+findFAQMatch(text) {
+    const lowerText = text.toLowerCase();
+    
+    // Direct key match
+    for (const key in botFAQs) {
+        if (lowerText.includes(key.toLowerCase())) {
+            return botFAQs[key];
+        }
+    }
+    
+    // Keyword-based matching
+    const textWords = lowerText.split(/\s+/);
+    for (const key in botFAQs) {
+        const keyWords = key.toLowerCase().split(/\s+/);
+        const matchCount = keyWords.filter(keyWord => 
+            textWords.some(textWord => 
+                textWord.includes(keyWord) || keyWord.includes(textWord)
+            )
+        ).length;
+        
+        // If more than half the keywords match, consider it a match
+        if (matchCount > keyWords.length / 2) {
+            return botFAQs[key];
+        }
+    }
+    
+    return null;
+}
+
+  processMessage(message) {
+    this.conversationHistory.push({ sender: 'user', message, timestamp: Date.now() });
+
+    const entities = this.extractEntities(message);
+    const intent = this.detectIntent(message);
+
+    console.log(`Detected intent: ${intent} for message: "${message}"`);
+
+    this.updateUserProfile(entities);
+    this.currentTopic = intent;
+
+    const response = this.generateResponse(intent, entities, message);
+
+    // ✅ Suggestion logic added here:
+    const faqMatch = botFAQs[intent]; // intent should match the key in your botFAQs
+    if (faqMatch && faqMatch.quick_replies && faqMatch.quick_replies.length > 0) {
+        const suggestions = faqMatch.quick_replies.map(text => ({ label: text, value: text }));
+        this.showSuggestions(suggestions);
+    } else {
+        this.clearSuggestions();
+    }
+
+    this.conversationHistory.push({ sender: 'bot', message: response, timestamp: Date.now() });
+
+    return response;
+}
+
+
+    extractEntities(message) {
+        const entities = {};
+        const nameMatch = message.match(/(?:my name is|i'm|i am)\s+([a-zA-Z]+)/i);
+        if (nameMatch) entities.name = nameMatch[1];
+        const budgetMatch = message.match(/\$?(\d+(?:,\d{3})*(?:\.\d{2})?)/);
+        if (budgetMatch) entities.budget = budgetMatch[1];
+        const timeMatch = message.match(/(\d+)\s*(days?|weeks?|months?|hours?)/i);
+        if (timeMatch) entities.timeframe = `${timeMatch[1]} ${timeMatch[2]}`;
+        const projectTypes = ['website', 'landing page', 'e-commerce', 'blog', 'portfolio', 'dashboard', 'app'];
+        projectTypes.forEach(type => {
+            if (message.toLowerCase().includes(type)) entities.projectType = type;
+        });
+        return entities;
+    }
+
+    updateUserProfile(entities) {
+        if (entities.name) this.userProfile.name = entities.name.charAt(0).toUpperCase() + entities.name.slice(1);
+        if (entities.budget) this.userProfile.budget = entities.budget;
+        if (entities.timeframe) this.userProfile.timeline = entities.timeframe;
+        if (entities.projectType) {
+            this.userProfile.projectType = entities.projectType;
+            if (!this.userProfile.interests.includes(entities.projectType)) {
+                this.userProfile.interests.push(entities.projectType);
+            }
+        }
+        this.userProfile.visitCount++;
+    }
+
+    displayMessage(sender, message) {
+        const chatBody = document.getElementById("chat-body");
+        if (!chatBody) return;
+        
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", sender);
+        const avatar = document.createElement("img");
+        avatar.classList.add("avatar");
+        avatar.src = sender === "user" ? "img/user-avatar.webp" : "img/bot-avatar.webp";
+        avatar.alt = sender === "user" ? (this.userProfile.name || "You") : "Mubeen";
+        const textDiv = document.createElement("div");
+        textDiv.classList.add("text");
+        textDiv.style.whiteSpace = "pre-line";
+        textDiv.textContent = message;
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(textDiv);
+        chatBody.appendChild(messageDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    displayTyping() {
+        const chatBody = document.getElementById("chat-body");
+        if (!chatBody) return;
+        const typingDiv = document.createElement("div");
+        typingDiv.classList.add("message", "bot");
+        typingDiv.id = "typing-indicator";
+        const avatar = document.createElement("img");
+        avatar.classList.add("avatar");
+        avatar.src = "img/bot-avatar.webp";
+        avatar.alt = "Mubeen";
+        const dots = document.createElement("div");
+        dots.classList.add("typing-dots");
+        dots.innerHTML = "<span></span><span></span><span></span>";
+        typingDiv.appendChild(avatar);
+        typingDiv.appendChild(dots);
+        chatBody.appendChild(typingDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    removeTyping() {
+        const typingIndicator = document.getElementById("typing-indicator");
+        if (typingIndicator) typingIndicator.remove();
+    }
+
+   showSuggestions(suggestions) {
+    const container = document.getElementById("quick-replies");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    suggestions.forEach(suggestion => {
+        const btn = document.createElement("button");
+        btn.textContent = suggestion.label;
+        btn.classList.add("quick-btn");
+        btn.onclick = () => {
+            const input = document.getElementById("user-input");
+            if (input) {
+                input.value = suggestion.value;
+                this.sendMessage();
+                this.clearSuggestions();
+            }
+        };
+        container.appendChild(btn);
+    });
+    container.scrollIntoView({ behavior: "smooth", block: "end" });
+
+}
+
+
+    clearSuggestions() {
+        const container = document.getElementById("quick-replies");
+        if (container) container.innerHTML = "";
+    }
+
+    checkEnter(e) {
+        if (e.key === "Enter") this.sendMessage();
+    }
+
+    // ==================== ADDITIONAL TRAINING METHODS ====================
+    addIntent(intentName, patterns, responses) {
+        if (!this.trainingData.intents[intentName]) {
+            this.trainingData.intents[intentName] = { patterns: [], responses: [] };
+        }
+        
+        this.trainingData.intents[intentName].patterns.push(...patterns);
+        this.trainingData.intents[intentName].responses.push(...responses);
+        
+        this.saveTrainingData();
+    }
+
+    addFAQ(question, answer) {
+        this.trainingData.faq[question.toLowerCase()] = answer;
+        this.saveTrainingData();
+    }
+
+    addCustomPattern(pattern, response, priority = 1) {
+        this.trainingData.customRules.push({
+            pattern: new RegExp(pattern, 'i'),
+            response: response,
+            priority: priority
+        });
+        this.saveTrainingData();
+    }
+}
+
+// ==================== INITIALIZE CHATBOT ====================
+const chatbot = new TrainableChatbot();
+function findAdvancedFAQMatch(text) {
+    const lowerText = text.toLowerCase();
+    
+    for (const [key, faq] of Object.entries(advancedBotFAQs)) {
+        for (const trigger of faq.triggers) {
+            if (lowerText.includes(trigger.toLowerCase())) {
+                return faq;
+            }
+        }
+    }
+    
+    return null;
+}
+// Global functions
+function sendMessage() {
+    chatbot.sendMessage();
+}
+
+function checkEnter(e) {
+    chatbot.checkEnter(e);
+}
+
+// Debug functions
+function exportTrainingData() {
+    const data = chatbot.exportTrainingData();
+    console.log("Training data exported:", data);
+    return data;
+}
+
+// Test function
+function testChatbot() {
+    console.log("Testing Mubeen's chatbot:");
+    console.log("Available intents:", Object.keys(chatbot.trainingData.intents));
+    console.log("FAQ items:", Object.keys(chatbot.trainingData.faq));
+    console.log("Custom rules:", chatbot.trainingData.customRules.length);
+    
+    // Test some inputs
+    const testInputs = ["hello", "hi", "intro", "skills", "projects", "pricing"];
+    testInputs.forEach(input => {
+        const intent = chatbot.detectIntent(input);
+        console.log(`"${input}" -> Intent: ${intent}`);
+    });
+}
+
+// Make available globally
+window.chatbot = chatbot;
+window.testChatbot = testChatbot;

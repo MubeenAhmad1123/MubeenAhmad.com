@@ -1256,7 +1256,7 @@ text-decoration: none;
   height: 60%;
   object-fit: contain;
 }
-
+/* Bot icon wrapper */
 .bot-icon.toggle-icon {
   width: 55px;
   height: 55px;

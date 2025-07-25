@@ -827,7 +827,7 @@ forceShowSuggestions(suggestions) {
             transition: background 0.3s;
         `;
         
-        // Add hover effect
+
         button.onmouseover = () => button.style.background = '#0056b3';
         button.onmouseout = () => button.style.background = '#007bff';
         

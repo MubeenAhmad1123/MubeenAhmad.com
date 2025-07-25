@@ -523,28 +523,7 @@ getUniqueResponse(responses) {
             this.displayInitialGreeting();
         });
     }
-
-    displayInitialGreeting() {
-        const greetings = [
-            "Hi there! 👋 I'm Mubeen Ahmad, a Creative Front-End Developer. How can I help you today?",
-            "Hello! 😊 Great to see you! I'm Mubeen - what brings you here?",
-            "Hey! 🌟 Welcome to my space! I'm a front-end developer ready to help with your projects!"
-        ];
-        
-        const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-        
-        setTimeout(() => {
-            this.displayMessage("bot", greeting);
-            this.showSuggestions([
-                { label: "👋 About Me", value: "Tell me about yourself" },
-                { label: "💻 My Skills", value: "What are your technical skills?" },
-                { label: "🚀 My Projects", value: "Show me your projects" },
-                { label: "💰 Pricing", value: "What are your rates?" },
-                { label: "📞 Contact", value: "How can I contact you?" }
-            ]);
-        }, 1000);
-    }
-
+// 2. Fixed sendMessage function with better error handling
 sendMessage() {
     const input = document.getElementById("user-input");
     if (!input) return;
@@ -559,6 +538,7 @@ sendMessage() {
     // Preprocess the message for better matching
     const processedMessage = this.preprocessMessage(message);
     let matchedEntry = null;
+    let matchedKey = null;
 
     // Try exact match first (case-insensitive)
     const exactKey = Object.keys(botFAQs).find(key => 
@@ -567,11 +547,12 @@ sendMessage() {
     
     if (exactKey) {
         matchedEntry = botFAQs[exactKey];
+        matchedKey = exactKey;
     }
 
     // If no exact match, try partial matching with priority scoring
     if (!matchedEntry) {
-        let bestMatch = { key: null, score: 0 };
+        let bestMatch = { key: null, score: 0, entry: null };
         
         Object.keys(botFAQs).forEach(key => {
             const keyLower = key.toLowerCase();
@@ -581,7 +562,7 @@ sendMessage() {
             let score = 0;
             
             // Exact phrase match gets highest score
-            if (msgLower.includes(keyLower)) {
+            if (msgLower.includes(keyLower) || keyLower.includes(msgLower)) {
                 score = 100;
             }
             // Word-by-word matching
@@ -599,18 +580,27 @@ sendMessage() {
             }
             
             if (score > bestMatch.score && score > 50) {
-                bestMatch = { key, score };
+                bestMatch = { key, score, entry: botFAQs[key] };
             }
         });
         
-        if (bestMatch.key) {
-            matchedEntry = botFAQs[bestMatch.key];
+        if (bestMatch.entry) {
+            matchedEntry = bestMatch.entry;
+            matchedKey = bestMatch.key;
         }
     }
 
     // Use matched response or fallback
-    let response = matchedEntry ? matchedEntry.response : this.processMessage(message);
-    const quickReplies = matchedEntry && matchedEntry.quick_replies ? matchedEntry.quick_replies : [];
+    let response;
+    let quickReplies = [];
+
+    if (matchedEntry) {
+        response = matchedEntry.response;
+        quickReplies = matchedEntry.quick_replies || [];
+    } else {
+        // Fallback to the original processMessage method
+        response = this.processMessage(message);
+    }
 
     const delay = Math.min(800 + response.length * 20, 2500);
 
@@ -633,7 +623,7 @@ sendMessage() {
     input.value = "";
 }
 
-// Enhanced preprocessing function
+// 3. Enhanced preprocessing function with greeting detection
 preprocessMessage(message) {
     let text = message.toLowerCase().trim();
     
@@ -650,7 +640,14 @@ preprocessMessage(message) {
         'frontend': 'front end',
         'backend': 'back end',
         'website': 'site',
-        'webpage': 'site'
+        'webpage': 'site',
+        // Add greeting variations
+        'hii': 'hi',
+        'hiii': 'hi',
+        'helo': 'hello',
+        'hellow': 'hello',
+        'hy': 'hi',
+        'hye': 'hi'
     };
     
     Object.keys(variations).forEach(key => {
@@ -661,14 +658,66 @@ preprocessMessage(message) {
     return text;
 }
 
-// Enhanced findFAQMatch function for better matching
-findFAQMatch(text) {
-    const lowerText = text.toLowerCase();
+// 4. Updated generateResponse function to work with both systems
+generateResponse(intent, entities, message) {
+    let response = '';
     
-    // Direct key match
+    // First check if this is a direct FAQ match
+    const faqMatch = this.findFAQMatch(message.toLowerCase());
+    if (faqMatch && botFAQs[faqMatch]) {
+        response = this.personalizeResponse(botFAQs[faqMatch].response, entities);
+        return response;
+    }
+    
+    // Then check custom rules
+    if (intent.startsWith('custom_')) {
+        const ruleIndex = parseInt(intent.split('_')[1]);
+        const rule = this.trainingData.customRules[ruleIndex];
+        response = this.personalizeResponse(rule.response, entities);
+    }
+    // Check training data intents
+    else if (this.trainingData && this.trainingData.intents && this.trainingData.intents[intent]) {
+        const responses = this.trainingData.intents[intent].responses;
+        
+        // Filter out recently used responses
+        let availableResponses = responses.filter(r => !this.recentResponses.includes(r));
+        if (availableResponses.length === 0) {
+            availableResponses = responses;
+            this.recentResponses = [];
+        }
+        
+        const randomResponse = availableResponses[Math.floor(Math.random() * availableResponses.length)];
+        response = this.personalizeResponse(randomResponse, entities);
+        
+        // Track this response
+        this.recentResponses.push(randomResponse);
+        if (this.recentResponses.length > this.maxRecentResponses) {
+            this.recentResponses.shift();
+        }
+    }
+    else {
+        response = this.generateFallbackResponse(message);
+    }
+
+    this.lastResponseType = intent;
+    return response;
+}
+
+// 5. Fixed findFAQMatch function
+findFAQMatch(text) {
+    const lowerText = text.toLowerCase().trim();
+    
+    // Direct key match first
     for (const key in botFAQs) {
-        if (lowerText.includes(key.toLowerCase())) {
-            return botFAQs[key];
+        if (lowerText === key.toLowerCase()) {
+            return key;
+        }
+    }
+    
+    // Partial match
+    for (const key in botFAQs) {
+        if (lowerText.includes(key.toLowerCase()) || key.toLowerCase().includes(lowerText)) {
+            return key;
         }
     }
     
@@ -682,42 +731,118 @@ findFAQMatch(text) {
             )
         ).length;
         
-        // If more than half the keywords match, consider it a match
         if (matchCount > keyWords.length / 2) {
-            return botFAQs[key];
+            return key;
         }
     }
     
     return null;
 }
 
-  processMessage(message) {
-    this.conversationHistory.push({ sender: 'user', message, timestamp: Date.now() });
-
-    const entities = this.extractEntities(message);
-    const intent = this.detectIntent(message);
-
-    console.log(`Detected intent: ${intent} for message: "${message}"`);
-
-    this.updateUserProfile(entities);
-    this.currentTopic = intent;
-
-    const response = this.generateResponse(intent, entities, message);
-
-    // ✅ Suggestion logic added here:
-    const faqMatch = botFAQs[intent]; // intent should match the key in your botFAQs
-    if (faqMatch && faqMatch.quick_replies && faqMatch.quick_replies.length > 0) {
-        const suggestions = faqMatch.quick_replies.map(text => ({ label: text, value: text }));
-        this.showSuggestions(suggestions);
-    } else {
-        this.clearSuggestions();
-    }
-
-    this.conversationHistory.push({ sender: 'bot', message: response, timestamp: Date.now() });
-
-    return response;
+// 6. Fixed displayInitialGreeting function with better error handling
+displayInitialGreeting() {
+    const greetings = [
+        "Hi there! 👋 I'm Mubeen Ahmad, a Creative Front-End Developer. How can I help you today?",
+        "Hello! 😊 Great to see you! I'm Mubeen - what brings you here?",
+        "Hey! 🌟 Welcome to my space! I'm a front-end developer ready to help with your projects!"
+    ];
+    
+    const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    
+    // Clear any existing suggestions first
+    this.clearSuggestions();
+    
+    // Display the greeting message first
+    setTimeout(() => {
+        this.displayMessage("bot", greeting);
+        
+        // Force show suggestions after message is displayed
+        setTimeout(() => {
+            const suggestions = [
+                { label: "👋 About Me", value: "Tell me about yourself" },
+                { label: "💻 My Skills", value: "What are your technical skills?" },
+                { label: "🚀 My Projects", value: "Show me your projects" },
+                { label: "💰 Pricing", value: "What are your rates?" },
+                { label: "📞 Contact", value: "How can I contact you?" }
+            ];
+            
+            console.log("Showing initial suggestions:", suggestions); // Debug log
+            this.showSuggestions(suggestions);
+            
+            // Fallback - if showSuggestions doesn't work, try direct DOM manipulation
+            if (!document.querySelector('.suggestion-button')) {
+                this.forceShowSuggestions(suggestions);
+            }
+        }, 800);
+        
+    }, 1000);
 }
 
+// 7. Fallback function to force show suggestions if showSuggestions fails
+forceShowSuggestions(suggestions) {
+    console.log("Force showing suggestions"); // Debug log
+    
+    // Try to find the suggestions container
+    let suggestionsContainer = document.querySelector('.suggestions-container') || 
+                              document.querySelector('#suggestions') ||
+                              document.querySelector('.quick-replies');
+    
+    // If no container exists, create one
+    if (!suggestionsContainer) {
+        suggestionsContainer = document.createElement('div');
+        suggestionsContainer.className = 'suggestions-container';
+        suggestionsContainer.style.cssText = `
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+            padding: 10px;
+        `;
+        
+        // Try to append to common chat container locations
+        const chatContainer = document.querySelector('.chat-container') ||
+                            document.querySelector('#chat-messages') ||
+                            document.querySelector('.messages') ||
+                            document.body;
+        
+        chatContainer.appendChild(suggestionsContainer);
+    }
+    
+    // Clear existing suggestions
+    suggestionsContainer.innerHTML = '';
+    
+    // Create suggestion buttons
+    suggestions.forEach(suggestion => {
+        const button = document.createElement('button');
+        button.className = 'suggestion-button';
+        button.textContent = suggestion.label;
+        button.style.cssText = `
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        `;
+        
+        // Add hover effect
+        button.onmouseover = () => button.style.background = '#0056b3';
+        button.onmouseout = () => button.style.background = '#007bff';
+        
+        // Add click handler
+        button.onclick = () => {
+            const input = document.getElementById("user-input");
+            if (input) {giy
+                input.value = suggestion.value;
+                this.sendMessage();
+            }
+        };
+        
+        suggestionsContainer.appendChild(button);
+    });
+}
 
     extractEntities(message) {
         const entities = {};
